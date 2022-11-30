@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const groceriesRoute = require('./routes/groceries')
 const marketRoute = require('./routes/markets')
 
@@ -7,6 +8,8 @@ const PORT = 3001
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use(cookieParser())
 
 // Middleware function for logging request routes and methods
 app.use((req, res, next) => {
