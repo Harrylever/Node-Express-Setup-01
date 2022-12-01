@@ -1,4 +1,5 @@
 const { Router } = require('express')
+const User = require('../database/schema/user')
 
 const router = Router()
 
@@ -21,6 +22,19 @@ router.post('/login', (req, res) => {
       res.send(req.session)
     }
   } else res.status(401).send('Error please enter valid details')
+})
+
+router.post('/register', async (req, res) => {
+  const { username, password, email } = req.body
+
+  const userDB = await User.findOne({ $or: [{ username }, { email }] })
+  if (userDB) {
+    res.status(400).json({ msg: 'User already exists' })
+  } else {
+    const newUser = await User.create({ username, password, email })
+    newUser.save()
+    res.status(201).json({ statusMsg: 'User created' })
+  }
 })
 
 module.exports = router

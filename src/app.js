@@ -8,6 +8,8 @@ const authRoute = require('./routes/auth')
 const app = express()
 const PORT = 3001
 
+require('./database/index')
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
