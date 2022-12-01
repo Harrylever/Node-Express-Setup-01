@@ -17,6 +17,11 @@ const StuffList = [
   }
 ]
 
+router.use((req, res, next) => {
+  if (req.session.user) next()
+  else res.status(401).send('unauthorized')
+})
+
 router.get('/', (req, res, next) => {
   console.log('Before Handling Request')
   next()
@@ -37,6 +42,31 @@ router.get('/:item', (req, res) => {
 router.post('/', (req, res) => {
   console.log(req.body)
   res.sendStatus(200)
+})
+
+router.get('/shopping/cart', (req, res) => {
+  const { cart } = req.session
+  if (!cart) {
+    res.send('you have not cart session')
+  } else {
+    res.send(cart)
+  }
+})
+
+router.post('/shopping/cart/item', (req, res) => {
+  const { item, quantity } = req.body
+  const cartItem = { item, quantity }
+  const { cart } = req.session
+  if (cart) {
+    console.log('This is cart', cart)
+    req.session.cart.items.push(cartItem)
+  } else {
+    console.log('There no is cart')
+    req.session.cart = {
+      items: [cartItem]
+    }
+  }
+  res.status(201).send('ok')
 })
 
 module.exports = router

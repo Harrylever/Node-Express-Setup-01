@@ -35,6 +35,11 @@ const superMarkets = [
   }
 ]
 
+router.use((req, res, next) => {
+  if (req.session.user) next()
+  else res.status(401).send('unauthorized')
+})
+
 router.get('/', (req, res) => {
   const { miles } = req.query
   const ParsedMiles = parseInt(miles)
